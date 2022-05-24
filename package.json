@@ -1,27 +1,24 @@
 {
-  "name": "backend__learn",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "backend-learn-js",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/viktor-gif/backend__learn-js.git"
-  },
-  "author": "viktor-gif",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/viktor-gif/backend__learn-js/issues"
-  },
-  "homepage": "https://github.com/viktor-gif/backend__learn-js#readme",
   "dependencies": {
+    "body-parser": "^1.20.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
     "ejs": "^3.1.8",
-    "errorhandler": "^1.5.1",
-    "express": "^4.18.1",
+    "ejs-locals": "^1.0.2",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
     "nconf": "^0.12.0",
-    "node-notifier": "^10.0.1",
-    "winston": "^3.7.2"
+    "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
   }
 }
