@@ -9,12 +9,10 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 const favicon = require('serve-favicon')
 const config = require('./config')
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const HttpError = require('./error');
 
 var app = express();
 app.set('port', config.get('port'))
@@ -39,6 +37,7 @@ app.use(bodyParser.json())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(require('./middleware/sendHttpError'))
 
 // app.use(app.router)
 
@@ -76,12 +75,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 //     res.send(404, 'Sorry, page not found');
 // })
 app.use((err, req, res, next) => {
-
     console.log(err.message);
-    
-    if (app.get('env') == 'development') {
-        res.end(`<h1>ERROR</h1><h2>${err.message}</h2>`)
+
+    if (typeof err == 'number') {
+        err = new HttpError(err)
     }
+
+    if (err instanceof HttpError) {
+        res.sendHttpError(err)
+    } else {
+        if (app.get('env') == 'development') {
+            res.end(`<h1>ERROR</h1><h2>${err.message}</h2>`)
+        } else {
+            console.log(err)
+            err = new HttpError(500)
+            res.sendHttpError(err)
+        }
+    }
+    
+    
 })
 
 
