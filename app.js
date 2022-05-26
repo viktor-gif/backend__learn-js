@@ -19,6 +19,7 @@ const bodyParser = require('body-parser')
 var app = express();
 app.set('port', config.get('port'))
 
+app.engine('ejs', require('ejs-locals'))
 app.set('views', path.join(__dirname, 'template'));
 app.set('view engine', 'ejs');
 
