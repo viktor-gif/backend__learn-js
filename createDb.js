@@ -1,14 +1,17 @@
-const User = require('./models/user')
 const mongoose = require('./libs/mongoose')
+mongoose.set('debug', true)
 const async = require('async')
 
 async.series([
     open,
     dropDatabase,
+    requireModels,
     createUsers,
     close
 ], function (err, results) {
-    console.log('async.series bla-bla-bla');
+    console.log(arguments);
+    mongoose.disconnect()
+    process.exit(err ? 255 : 0)
 })
 
 function open(callback) {
@@ -18,7 +21,18 @@ function dropDatabase(callback) {
     const db = mongoose.connection.db;
     db.dropDatabase(callback)
 }
+
+function requireModels(callback) {
+    require('./models/user')
+
+    async.each(Object.keys(mongoose.models), function (modelName, callback) {
+        mongoose.models[modelName].ensureIndexes(callback)
+    }, callback)
+}
+
 function createUsers(callback) {
+    
+
     let users = [
         { username: 'Вася', password: 'supervasya' },
         { username: 'Петя', password: '12345' },
@@ -26,8 +40,7 @@ function createUsers(callback) {
     ]
 
     async.each(users, (userData, callback) => {
-        let user = new User(userData)
-        console.log(user)
+        let user = new mongoose.models.User(userData)
         user.save(callback)
     }, callback)
 }
