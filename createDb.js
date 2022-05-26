@@ -8,7 +8,7 @@ async.series([
     createUsers,
     close
 ], function (err, results) {
-    console.log(results);
+    console.log('async.series bla-bla-bla');
 })
 
 function open(callback) {
@@ -19,27 +19,40 @@ function dropDatabase(callback) {
     db.dropDatabase(callback)
 }
 function createUsers(callback) {
-    async.parallel([
-        function (callback) {
-            const vasya = new User({ username: 'Вася', password: 'supervasya' })
-            vasya.save((err) => {
-                callback(err, vasya)
-            })
-        },
-        function (callback) {
-            const petya = new User({ username: 'Петя', password: '12345' })
-            petya.save((err) => {
-                callback(err, petya)
-            })
-        },
-        function (callback) {
-            const admin = new User({ username: 'admin', password: 'thenthis' })
-            admin.save((err) => {
-                callback(err, admin)
-            })
-        }
-    ], callback)
+    let users = [
+        { username: 'Вася', password: 'supervasya' },
+        { username: 'Петя', password: '12345' },
+        { username: 'admin', password: 'thenthis' }
+    ]
+
+    async.each(users, (userData, callback) => {
+        let user = new User(userData)
+        console.log(user)
+        user.save(callback)
+    }, callback)
 }
+// function createUsers(callback) {
+//     async.parallel([
+//         function (callback) {
+//             const vasya = new User({ username: 'Вася', password: 'supervasya' })
+//             vasya.save((err) => {
+//                 callback(err, vasya)
+//             })
+//         },
+//         function (callback) {
+//             const petya = new User({ username: 'Петя', password: '12345' })
+//             petya.save((err) => {
+//                 callback(err, petya)
+//             })
+//         },
+//         function (callback) {
+//             const admin = new User({ username: 'admin', password: 'thenthis' })
+//             admin.save((err) => {
+//                 callback(err, admin)
+//             })
+//         }
+//     ], callback)
+// }
 function close(callback) {
     mongoose.disconnect(callback)
 }
